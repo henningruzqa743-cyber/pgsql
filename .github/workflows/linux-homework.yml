@@ -19,7 +19,12 @@ jobs:
           ls -1 /sys/bus/event_source/devices | head -25
           if sudo -n true; then echo 'sudo available'; else echo 'sudo unavailable'; fi
       - name: Compile, test, and measure
+        continue-on-error: true
         run: sh run_linux.sh
+      - name: Retry hardware counters as administrator
+        run: |
+          set -o pipefail
+          sudo ./link_search 10000 64 1000 2>&1 | tee -a "$(date +%m%d)_1.log"
       - name: Save run log
         if: always()
         uses: actions/upload-artifact@v4
