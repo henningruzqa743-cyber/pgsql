@@ -9,6 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Inspect perf access
+        run: |
+          id
+          printf 'perf_event_paranoid='
+          cat /proc/sys/kernel/perf_event_paranoid
+          grep '^CapEff:' /proc/self/status
+          printf 'PMU devices:\n'
+          ls -1 /sys/bus/event_source/devices | head -25
+          if sudo -n true; then echo 'sudo available'; else echo 'sudo unavailable'; fi
       - name: Compile, test, and measure
         run: sh run_linux.sh
       - name: Save run log
