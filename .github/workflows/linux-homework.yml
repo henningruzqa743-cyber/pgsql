@@ -1,0 +1,20 @@
+name: Linux homework check
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile, test, and measure
+        run: sh run_linux.sh
+      - name: Save run log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-run-log
+          path: '*_1.log'
+          if-no-files-found: warn
